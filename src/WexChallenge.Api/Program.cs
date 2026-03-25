@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WexChallenge.Api.Data;
+using WexChallenge.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +13,16 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    if (db.Database.IsNpgsql())
+        db.Database.Migrate();
+    else
+        db.Database.EnsureCreated();
 }
 
 app.MapGet("/", () => "WEX Card API is running");
+app.MapCardEndpoints();
 
 app.Run();
+
+// needed for WebApplicationFactory in integration tests
+public partial class Program { }
