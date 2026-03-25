@@ -81,6 +81,46 @@ public class BalanceEndpointTests : IClassFixture<TestWebAppFactory>
     }
 
     [Fact]
+    public async Task GetBalance_InPhilippinePeso_ReturnsConvertedBalance()
+    {
+        var card = await CreateTestCard(2000m);
+        await AddTransaction(card.Id, 500m);
+
+        _factory.FakeExchangeRates.SetLatestRate("Philippines-Peso", 58.91m, DateTime.UtcNow);
+
+        var response = await _client.GetAsync(
+            $"/api/cards/{card.Id}/balance?currency=Philippines-Peso");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var balance = await response.Content.ReadFromJsonAsync<BalanceResponse>();
+        Assert.Equal(1500m, balance!.AvailableBalance);
+        Assert.Equal("Philippines-Peso", balance.Currency);
+        Assert.Equal(58.91m, balance.ExchangeRate);
+        Assert.Equal(88365.00m, balance.ConvertedBalance); // 1500 * 58.91
+    }
+
+    [Fact]
+    public async Task GetBalance_InSingaporeDollar_ReturnsConvertedBalance()
+    {
+        var card = await CreateTestCard(3000m);
+        await AddTransaction(card.Id, 1000m);
+
+        _factory.FakeExchangeRates.SetLatestRate("Singapore-Dollar", 1.29m, DateTime.UtcNow);
+
+        var response = await _client.GetAsync(
+            $"/api/cards/{card.Id}/balance?currency=Singapore-Dollar");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var balance = await response.Content.ReadFromJsonAsync<BalanceResponse>();
+        Assert.Equal(2000m, balance!.AvailableBalance);
+        Assert.Equal("Singapore-Dollar", balance.Currency);
+        Assert.Equal(1.29m, balance.ExchangeRate);
+        Assert.Equal(2580.00m, balance.ConvertedBalance); // 2000 * 1.29
+    }
+
+    [Fact]
     public async Task GetBalance_InvalidCurrency_ReturnsBadRequest()
     {
         var card = await CreateTestCard();

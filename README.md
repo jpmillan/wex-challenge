@@ -134,5 +134,7 @@ The `currency` parameter uses the country-currency names from the Treasury API, 
 - `United Kingdom-Pound`
 - `Japan-Yen`
 - `Australia-Dollar`
+- `Philippines-Peso`
+- `Singapore-Dollar`
 
 See the full list at: https://fiscaldata.treasury.gov/datasets/treasury-reporting-rates-exchange/treasury-reporting-rates-of-exchange

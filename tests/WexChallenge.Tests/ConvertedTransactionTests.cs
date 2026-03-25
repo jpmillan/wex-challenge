@@ -52,6 +52,46 @@ public class ConvertedTransactionTests : IClassFixture<TestWebAppFactory>
     }
 
     [Fact]
+    public async Task GetTransaction_InPhilippinePeso_ReturnsConvertedAmount()
+    {
+        var (_, tx) = await CreateCardAndTransaction();
+
+        _factory.FakeExchangeRates.SetRateForDate("Philippines-Peso", 58.91m, new DateTime(2024, 10, 12));
+
+        var response = await _client.GetAsync(
+            $"/api/transactions/{tx.Id}?currency=Philippines-Peso");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var result = await response.Content.ReadFromJsonAsync<ConvertedTransactionResponse>();
+        Assert.NotNull(result);
+        Assert.Equal(50.00m, result.OriginalAmount);
+        Assert.Equal(58.91m, result.ExchangeRate);
+        Assert.Equal(2945.50m, result.ConvertedAmount); // 50 * 58.91
+        Assert.Equal("Philippines-Peso", result.Currency);
+    }
+
+    [Fact]
+    public async Task GetTransaction_InSingaporeDollar_ReturnsConvertedAmount()
+    {
+        var (_, tx) = await CreateCardAndTransaction();
+
+        _factory.FakeExchangeRates.SetRateForDate("Singapore-Dollar", 1.29m, new DateTime(2024, 10, 14));
+
+        var response = await _client.GetAsync(
+            $"/api/transactions/{tx.Id}?currency=Singapore-Dollar");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var result = await response.Content.ReadFromJsonAsync<ConvertedTransactionResponse>();
+        Assert.NotNull(result);
+        Assert.Equal(50.00m, result.OriginalAmount);
+        Assert.Equal(1.29m, result.ExchangeRate);
+        Assert.Equal(64.50m, result.ConvertedAmount); // 50 * 1.29
+        Assert.Equal("Singapore-Dollar", result.Currency);
+    }
+
+    [Fact]
     public async Task GetTransaction_NoRateAvailable_ReturnsBadRequest()
     {
         var (_, tx) = await CreateCardAndTransaction();
