@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using WexChallenge.Api.Data;
 using WexChallenge.Api.Endpoints;
+using WexChallenge.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHttpClient<IExchangeRateService, TreasuryExchangeRateService>();
 
 var app = builder.Build();
 
