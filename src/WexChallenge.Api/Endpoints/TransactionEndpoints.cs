@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WexChallenge.Api.Data;
 using WexChallenge.Api.Dtos;
 using WexChallenge.Api.Models;
+using WexChallenge.Api.Services;
 
 namespace WexChallenge.Api.Endpoints;
 
@@ -44,6 +45,35 @@ public static class TransactionEndpoints
 
             return Results.Created(
                 $"/api/cards/{cardId}/transactions/{transaction.Id}", response);
+        });
+
+        app.MapGet("/api/transactions/{id:guid}", async (
+            Guid id,
+            string currency,
+            AppDbContext db,
+            IExchangeRateService exchangeRateService) =>
+        {
+            var transaction = await db.Transactions.FirstOrDefaultAsync(t => t.Id == id);
+            if (transaction is null)
+                return Results.NotFound("Transaction not found.");
+
+            var rate = await exchangeRateService.GetRateForDate(currency, transaction.TransactionDate);
+            if (rate is null)
+            {
+                return Results.BadRequest(
+                    $"Cannot convert to {currency}. No exchange rate available within 6 months before the transaction date.");
+            }
+
+            var convertedAmount = Math.Round(transaction.Amount * rate.Rate, 2);
+
+            return Results.Ok(new ConvertedTransactionResponse(
+                transaction.Id,
+                transaction.Description,
+                transaction.TransactionDate,
+                transaction.Amount,
+                rate.Rate,
+                convertedAmount,
+                currency));
         });
     }
 }

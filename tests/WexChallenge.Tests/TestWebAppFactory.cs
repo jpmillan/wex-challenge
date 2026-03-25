@@ -5,12 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using WexChallenge.Api.Data;
+using WexChallenge.Api.Services;
 
 namespace WexChallenge.Tests;
 
 public class TestWebAppFactory : WebApplicationFactory<Program>
 {
     private SqliteConnection? _connection;
+    public FakeExchangeRateService FakeExchangeRates { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -35,6 +37,14 @@ public class TestWebAppFactory : WebApplicationFactory<Program>
                 options.ConfigureWarnings(w =>
                     w.Ignore(RelationalEventId.PendingModelChangesWarning));
             });
+
+            // swap out the real Treasury API client for our fake
+            var exchangeDescriptor = services.SingleOrDefault(
+                d => d.ServiceType == typeof(IExchangeRateService));
+            if (exchangeDescriptor != null)
+                services.Remove(exchangeDescriptor);
+
+            services.AddSingleton<IExchangeRateService>(FakeExchangeRates);
         });
     }
 
