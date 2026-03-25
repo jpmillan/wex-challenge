@@ -21,6 +21,7 @@ using (var scope = app.Services.CreateScope())
 
 app.MapGet("/", () => "WEX Card API is running");
 app.MapCardEndpoints();
+app.MapTransactionEndpoints();
 
 app.Run();
 
