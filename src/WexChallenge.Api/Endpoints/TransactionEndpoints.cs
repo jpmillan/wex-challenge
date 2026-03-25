@@ -25,6 +25,9 @@ public static class TransactionEndpoints
             if (request.Amount <= 0)
                 return Results.BadRequest("Amount must be greater than zero.");
 
+            if (request.Description.Length > 500)
+                return Results.BadRequest("Description must be 500 characters or fewer.");
+
             var transaction = new Transaction
             {
                 Id = Guid.NewGuid(),

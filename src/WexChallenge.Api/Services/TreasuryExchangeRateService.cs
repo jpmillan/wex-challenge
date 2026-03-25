@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
@@ -31,12 +32,10 @@ public class TreasuryExchangeRateService : IExchangeRateService
             return null;
 
         var entry = result.Data[0];
-        return new ExchangeRate
-        {
-            Currency = entry.Currency,
-            Rate = decimal.Parse(entry.ExchangeRate),
-            EffectiveDate = DateTime.Parse(entry.RecordDate)
-        };
+        return new ExchangeRate(
+            entry.Currency,
+            decimal.Parse(entry.ExchangeRate, CultureInfo.InvariantCulture),
+            DateTime.Parse(entry.RecordDate, CultureInfo.InvariantCulture));
     }
 
     public async Task<ExchangeRate?> GetLatestRate(string currency)
@@ -52,12 +51,10 @@ public class TreasuryExchangeRateService : IExchangeRateService
             return null;
 
         var entry = result.Data[0];
-        return new ExchangeRate
-        {
-            Currency = entry.Currency,
-            Rate = decimal.Parse(entry.ExchangeRate),
-            EffectiveDate = DateTime.Parse(entry.RecordDate)
-        };
+        return new ExchangeRate(
+            entry.Currency,
+            decimal.Parse(entry.ExchangeRate, CultureInfo.InvariantCulture),
+            DateTime.Parse(entry.RecordDate, CultureInfo.InvariantCulture));
     }
 }
 

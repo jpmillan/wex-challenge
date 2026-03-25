@@ -1,11 +1,6 @@
 namespace WexChallenge.Api.Services;
 
-public class ExchangeRate
-{
-    public string Currency { get; set; } = string.Empty;
-    public decimal Rate { get; set; }
-    public DateTime EffectiveDate { get; set; }
-}
+public record ExchangeRate(string Currency, decimal Rate, DateTime EffectiveDate);
 
 public interface IExchangeRateService
 {

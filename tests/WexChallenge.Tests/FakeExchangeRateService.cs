@@ -9,22 +9,12 @@ public class FakeExchangeRateService : IExchangeRateService
 
     public void SetRateForDate(string currency, decimal rate, DateTime effectiveDate)
     {
-        _rates[currency] = new ExchangeRate
-        {
-            Currency = currency,
-            Rate = rate,
-            EffectiveDate = effectiveDate
-        };
+        _rates[currency] = new ExchangeRate(currency, rate, effectiveDate);
     }
 
     public void SetLatestRate(string currency, decimal rate, DateTime effectiveDate)
     {
-        _latestRate = new ExchangeRate
-        {
-            Currency = currency,
-            Rate = rate,
-            EffectiveDate = effectiveDate
-        };
+        _latestRate = new ExchangeRate(currency, rate, effectiveDate);
     }
 
     public void Clear()
