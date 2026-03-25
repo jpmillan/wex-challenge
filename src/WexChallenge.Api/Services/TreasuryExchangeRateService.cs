@@ -16,13 +16,12 @@ public class TreasuryExchangeRateService : IExchangeRateService
 
     public async Task<ExchangeRate?> GetRateForDate(string currency, DateTime transactionDate)
     {
-        // look for rates within 6 months before the transaction date
         var sixMonthsBefore = transactionDate.AddMonths(-6);
         var fromDate = sixMonthsBefore.ToString("yyyy-MM-dd");
         var toDate = transactionDate.ToString("yyyy-MM-dd");
 
-        var url = $"{BaseUrl}?fields=currency,exchange_rate,record_date" +
-                  $"&filter=currency:eq:{currency},record_date:gte:{fromDate},record_date:lte:{toDate}" +
+        var url = $"{BaseUrl}?fields=country_currency_desc,exchange_rate,record_date" +
+                  $"&filter=country_currency_desc:eq:{currency},record_date:gte:{fromDate},record_date:lte:{toDate}" +
                   "&sort=-record_date" +
                   "&page[size]=1";
 
@@ -33,15 +32,15 @@ public class TreasuryExchangeRateService : IExchangeRateService
 
         var entry = result.Data[0];
         return new ExchangeRate(
-            entry.Currency,
+            entry.CountryCurrencyDesc,
             decimal.Parse(entry.ExchangeRate, CultureInfo.InvariantCulture),
             DateTime.Parse(entry.RecordDate, CultureInfo.InvariantCulture));
     }
 
     public async Task<ExchangeRate?> GetLatestRate(string currency)
     {
-        var url = $"{BaseUrl}?fields=currency,exchange_rate,record_date" +
-                  $"&filter=currency:eq:{currency}" +
+        var url = $"{BaseUrl}?fields=country_currency_desc,exchange_rate,record_date" +
+                  $"&filter=country_currency_desc:eq:{currency}" +
                   "&sort=-record_date" +
                   "&page[size]=1";
 
@@ -52,7 +51,7 @@ public class TreasuryExchangeRateService : IExchangeRateService
 
         var entry = result.Data[0];
         return new ExchangeRate(
-            entry.Currency,
+            entry.CountryCurrencyDesc,
             decimal.Parse(entry.ExchangeRate, CultureInfo.InvariantCulture),
             DateTime.Parse(entry.RecordDate, CultureInfo.InvariantCulture));
     }
@@ -66,8 +65,8 @@ public class TreasuryApiResponse
 
 public class TreasuryRateEntry
 {
-    [JsonPropertyName("currency")]
-    public string Currency { get; set; } = string.Empty;
+    [JsonPropertyName("country_currency_desc")]
+    public string CountryCurrencyDesc { get; set; } = string.Empty;
 
     [JsonPropertyName("exchange_rate")]
     public string ExchangeRate { get; set; } = string.Empty;
