@@ -86,7 +86,7 @@ Uses the Treasury Reporting Rates of Exchange API to find an exchange rate on or
   "originalAmount": 4.50,
   "exchangeRate": 1.35,
   "convertedAmount": 6.08,
-  "currency": "Canada-Dollar"
+  "currency": "Singapore-Dollar"
 }
 ```
 
@@ -94,7 +94,7 @@ Uses the Treasury Reporting Rates of Exchange API to find an exchange rate on or
 
 ```
 GET /api/cards/{cardId}/balance
-GET /api/cards/{cardId}/balance?currency=Euro Zone-Euro
+GET /api/cards/{cardId}/balance?currency=Philippines-Peso
 ```
 
 Returns the card's available balance (credit limit minus total transactions). Optionally converts to a specified currency using the latest available exchange rate.
@@ -106,9 +106,9 @@ Returns the card's available balance (credit limit minus total transactions). Op
   "creditLimit": 5000.00,
   "totalSpent": 500.00,
   "availableBalance": 4500.00,
-  "currency": "Euro Zone-Euro",
-  "exchangeRate": 0.92,
-  "convertedBalance": 4140.00
+  "currency": "Philippines-Peso",
+  "exchangeRate": 58.911,
+  "convertedBalance": 294555.00
 }
 ```
 
@@ -122,12 +122,14 @@ Returns the card's available balance (credit limit minus total transactions). Op
 ## Currency Values
 
 The `currency` parameter uses the country-currency names from the Treasury API, for example:
-- `Canada-Dollar`
-- `Euro Zone-Euro`
-- `United Kingdom-Pound`
-- `Japan-Yen`
-- `Australia-Dollar`
 - `Philippines-Peso`
 - `Singapore-Dollar`
+- `Australia-Dollar`
+- `Canada-Dollar`
+- `United Kingdom-Pound`
+- `Japan-Yen`
+
 
 See the full list at: https://fiscaldata.treasury.gov/datasets/treasury-reporting-rates-exchange/treasury-reporting-rates-of-exchange
+
+![Alt text](https://static.boredpanda.com/blog/wp-content/uploads/2025/10/68ff325a5133b_funny-programmer-humor-posts__700.jpg "hope you see this")
