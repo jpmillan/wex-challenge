@@ -15,13 +15,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Card>(entity =>
         {
             entity.HasKey(c => c.Id);
-            entity.Property(c => c.CreditLimit).HasColumnType("decimal(18,2)");
+            entity.Property(c => c.CreditLimit).HasConversion<double>();
         });
 
         modelBuilder.Entity<Transaction>(entity =>
         {
             entity.HasKey(t => t.Id);
-            entity.Property(t => t.Amount).HasColumnType("decimal(18,2)");
+            entity.Property(t => t.Amount).HasConversion<double>();
             entity.Property(t => t.Description).HasMaxLength(500);
 
             entity.HasOne(t => t.Card)

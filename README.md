@@ -5,31 +5,24 @@ A .NET 9 Web API for managing credit cards and purchase transactions with curren
 ## Prerequisites
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-- [Docker](https://www.docker.com/get-started) (for PostgreSQL)
 
 ## Getting Started
 
-### 1. Start the database
-
-```bash
-docker compose up -d
-```
-
-### 2. Run the API
+### 1. Run the API
 
 ```bash
 dotnet run --project src/WexChallenge.Api
 ```
 
-The API will be available at `http://localhost:5118`.
+The API will be available at `http://localhost:5118`. The SQLite database is created automatically on first run.
 
-### 3. Run the tests
+### 2. Run the tests
 
 ```bash
 dotnet test
 ```
 
-Tests use an in-memory SQLite database and a fake exchange rate service, so Docker is not needed to run them.
+Tests use an in-memory SQLite database and a fake exchange rate service — no external dependencies needed.
 
 ## API Endpoints
 
@@ -122,7 +115,7 @@ Returns the card's available balance (credit limit minus total transactions). Op
 ## Architecture
 
 - **ASP.NET Core Minimal API** — lightweight, no controllers needed for this scope
-- **Entity Framework Core** with PostgreSQL — production database via Docker
+- **Entity Framework Core** with SQLite — zero-config file-based database, no external server needed
 - **Interface-based service design** — `IExchangeRateService` allows swapping the real Treasury API for a fake in tests
 - **Integration tests** with `WebApplicationFactory` and SQLite in-memory — fast, isolated, no external dependencies
 

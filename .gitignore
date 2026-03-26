@@ -26,3 +26,8 @@ Thumbs.db
 x64/
 x86/
 publish/
+
+## Database
+*.db
+*.db-shm
+*.db-wal
